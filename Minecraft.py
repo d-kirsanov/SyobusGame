@@ -51,7 +51,7 @@ def toggle_player_visibility():
     player_enabled = not player_enabled
     player.enabled = player_enabled
 
-def update(self):
+def update():
     global block_pick
     global p_key_held
     
@@ -143,7 +143,7 @@ class TableUI(Entity):
                 border=0.02,
                 scale=(cell_size, cell_size),  # Cells are square now
                 origin=(-0.5, 0),
-                position=(-0.43 + i * (cell_size + spacing), -0.42)) , # Adjust positions
+                position=(-0.43 + i * (cell_size + spacing), -0.42)) # Adjust positions
                 text_entity = Text(parent=cell, text=str(i + 1), position=(-0.43 + i * (cell_size + spacing), -0.382))
             else:
                 cell = NonInteractiveButton(    
@@ -152,7 +152,7 @@ class TableUI(Entity):
                 border=0.02,
                 scale=(cell_size, cell_size),  # Cells are square now
                 origin=(-0.5, 0),
-                position=(-0.43 + i * (cell_size + spacing), -0.42))  ,# Adjust positions
+                position=(-0.43 + i * (cell_size + spacing), -0.42))  # Adjust positions
                 text_entity = Text(parent=cell, text=str(i + 1), position=(-0.43 + i * (cell_size + spacing), -0.382))
 
             self.cells.append(cell)
