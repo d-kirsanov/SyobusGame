@@ -144,7 +144,7 @@ class TableUI(Entity):
                 scale=(cell_size, cell_size),  # Cells are square now
                 origin=(-0.5, 0),
                 position=(-0.43 + i * (cell_size + spacing), -0.42)) # Adjust positions
-                text_entity = Text(parent=cell, text=str(i + 1), position=(-0.43 + i * (cell_size + spacing), -0.382))
+                text_entity = Text(text=str(i + 1), position=(-0.43 + i * (cell_size + spacing), -0.382))
             else:
                 cell = NonInteractiveButton(    
                 parent=self,
@@ -153,7 +153,7 @@ class TableUI(Entity):
                 scale=(cell_size, cell_size),  # Cells are square now
                 origin=(-0.5, 0),
                 position=(-0.43 + i * (cell_size + spacing), -0.42))  # Adjust positions
-                text_entity = Text(parent=cell, text=str(i + 1), position=(-0.43 + i * (cell_size + spacing), -0.382))
+                text_entity = Text(text=str(i + 1), position=(-0.43 + i * (cell_size + spacing), -0.382))
 
             self.cells.append(cell)
             
