@@ -1,6 +1,5 @@
 from ursina.prefabs.first_person_controller import FirstPersonController
 from ursina import *
-import ursina,time
 
 app = Ursina()
 player_enabled = True
