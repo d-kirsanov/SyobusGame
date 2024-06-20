@@ -1,5 +1,6 @@
 from ursina.prefabs.first_person_controller import FirstPersonController
 from ursina import *
+import math
 
 app = Ursina()
 player_enabled = True
@@ -35,12 +36,12 @@ def hide_popup():
 def reset_game():
     show_popup("Recreated World blocks !")
     
-    for voxel in scene.entities:
-        if isinstance(voxel, Voxel):
-            voxel.disable()  # Disable current voxels
+    for block in scene.entities:
+        if isinstance(block, Block):
+            block.disable()  # Disable current blocks
 
     for x, y, z, texture in original_world:
-        voxel = Voxel(position=(x, y, z), texture=texture)  # Recreate voxels
+        block = Block(position=(x, y, z), texture=texture)  # Recreate blocks
 
     player.position = (12, 4, 12)  # Reset player's position
     invoke(hide_popup, delay=4)  # Hide popup after 3 seconds
@@ -72,15 +73,30 @@ def update():
     else:
         hand.passive()
 
-    if held_keys['1']: block_pick = 1
-    if held_keys['2']: block_pick = 2
-    if held_keys['3']: block_pick = 3
-    if held_keys['4']: block_pick = 4
-    if held_keys['5']: block_pick = 5
+    if held_keys['1']: 
+        block_pick = 1
+        hand.texture = grass_texture
+        hand.model='assets/block'
+    if held_keys['2']: 
+        block_pick = 2
+        hand.texture = stone_texture
+        hand.model='assets/block'
+    if held_keys['3']: 
+        block_pick = 3
+        hand.texture = brick_texture
+        hand.model='assets/block'
+    if held_keys['4']: 
+        block_pick = 4
+        hand.texture = dirt_texture
+        hand.model='assets/block'
+    if held_keys['5']: 
+        block_pick = 5
+        hand.texture = wood_texture
+        hand.model='assets/block'
 
 
 
-class Voxel(Button):
+class Block(Button):
     def __init__(self, position=(0, 0, 0), texture=grass_texture):
         super().__init__(
             parent=scene,
@@ -94,7 +110,12 @@ class Voxel(Button):
         self.default_color = self.color
 
     def on_mouse_enter(self):
-        self.color = color.color(19, 0.03, 0.7)
+        print("=============hovered!")
+        print(self.position)
+        print(player.position)
+        print(math.dist(self.position, player.position))
+        if math.dist(self.position, player.position) < 5:
+            self.color = color.color(19, 0.03, 0.7)
 
     def on_mouse_exit(self):
         self.color = self.default_color
@@ -105,16 +126,18 @@ class Voxel(Button):
 
         if self.hovered:
             if key == 'right mouse down':
-                punch_sound.play()
-                if block_pick == 1: voxel = Voxel(position=self.position + mouse.normal, texture=grass_texture)
-                if block_pick == 2: voxel = Voxel(position=self.position + mouse.normal, texture=stone_texture)
-                if block_pick == 3: voxel = Voxel(position=self.position + mouse.normal, texture=brick_texture)
-                if block_pick == 4: voxel = Voxel(position=self.position + mouse.normal, texture=dirt_texture)
-                if block_pick == 5: voxel = Voxel(position=self.position + mouse.normal, texture=wood_texture)
+                if math.dist(self.position, player.position) < 5:
+                    punch_sound.play()
+                    if block_pick == 1: block = Block(position=self.position + mouse.normal, texture=grass_texture)
+                    if block_pick == 2: block = Block(position=self.position + mouse.normal, texture=stone_texture)
+                    if block_pick == 3: block = Block(position=self.position + mouse.normal, texture=brick_texture)
+                    if block_pick == 4: block = Block(position=self.position + mouse.normal, texture=dirt_texture)
+                    if block_pick == 5: block = Block(position=self.position + mouse.normal, texture=wood_texture)
 
             if key == 'left mouse down':
-                punch_sound.play()
-                destroy(self)
+                if math.dist(self.position, player.position) < 5:
+                    punch_sound.play()
+                    destroy(self)
 
     
 class NonInteractiveButton(Button):
@@ -189,13 +212,13 @@ for z in range(world_size):
     for x in range(world_size):
         for y in range(world_depth):
             if y == 4:
-                voxel = Voxel(position=(x, y, z), texture=grass_texture)
+                block = Block(position=(x, y, z), texture=grass_texture)
                 original_world.append((x, y, z, grass_texture))
             elif y == 0:
-                voxel = Voxel(position=(x, y, z), texture=stone_texture)
+                block = Block(position=(x, y, z), texture=stone_texture)
                 original_world.append((x, y, z, stone_texture))
             else:
-                voxel = Voxel(position=(x, y, z), texture=dirt_texture)
+                block = Block(position=(x, y, z), texture=dirt_texture)
                 original_world.append((x, y, z, dirt_texture))
 player = FirstPersonController(position=(12,15,12))
 table = TableUI()
