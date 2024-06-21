@@ -11,6 +11,11 @@ world_depth = 5 # z
 
 reach_distance = 1005
 
+x_m = 20
+z_m = 15
+h_m = 5
+r_m = 10
+
 #camera.orthographic = True
 grass_texture = load_texture('assets/grass_block2.png')
 stone_texture = load_texture('assets/stone_block2.png')
@@ -212,8 +217,13 @@ class Hand(Entity):
 
 for z in range(world_size):
     for x in range(world_size):
-        for y in range(world_depth):
-            if y == 4:
+        dist_m = math.dist(Vec2(x, z), Vec2(x_m, z_m))
+        if dist_m <= r_m:
+            h = (math.cos(dist_m * math.pi / r_m) + 1)*h_m/2
+        else:
+            h = 0
+        for y in range(world_depth + int(h)):
+            if y == world_depth + int(h) - 1:
                 block = Block(position=(x, y, z), texture=grass_texture)
                 original_world.append((x, y, z, grass_texture))
             elif y == 0:
@@ -222,7 +232,7 @@ for z in range(world_size):
             else:
                 block = Block(position=(x, y, z), texture=dirt_texture)
                 original_world.append((x, y, z, dirt_texture))
-player = FirstPersonController(position=(12,15,12))
+player = FirstPersonController(position=(12,25,12))
 table = TableUI()
 sky = Sky()
 hand = Hand()
