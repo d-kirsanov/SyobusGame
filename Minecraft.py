@@ -6,8 +6,10 @@ app = Ursina()
 player_enabled = True
 p_key_held = False
 original_world = []
-world_size = 20 # x and y
+world_size = 25 # x and y
 world_depth = 5 # z
+
+reach_distance = 1005
 
 #camera.orthographic = True
 grass_texture = load_texture('assets/grass_block2.png')
@@ -34,7 +36,7 @@ def hide_popup():
     destroy(popup_text)
 
 def reset_game():
-    show_popup("Recreated World blocks !")
+    show_popup("мир переделан!!!")
     
     for block in scene.entities:
         if isinstance(block, Block):
@@ -110,11 +112,11 @@ class Block(Button):
         self.default_color = self.color
 
     def on_mouse_enter(self):
-        print("=============hovered!")
-        print(self.position)
-        print(player.position)
-        print(math.dist(self.position, player.position))
-        if math.dist(self.position, player.position) < 5:
+        #print("=============hovered!")
+        #print(self.position)
+        #print(player.position)
+        #print(math.dist(self.position, player.position))
+        if math.dist(self.position, player.position) < reach_distance:
             self.color = color.color(19, 0.03, 0.7)
 
     def on_mouse_exit(self):
@@ -126,16 +128,16 @@ class Block(Button):
 
         if self.hovered:
             if key == 'right mouse down':
-                if math.dist(self.position, player.position) < 5:
+                if math.dist(self.position, player.position) < reach_distance:
                     punch_sound.play()
-                    if block_pick == 1: block = Block(position=self.position + mouse.normal, texture=grass_texture)
-                    if block_pick == 2: block = Block(position=self.position + mouse.normal, texture=stone_texture)
-                    if block_pick == 3: block = Block(position=self.position + mouse.normal, texture=brick_texture)
-                    if block_pick == 4: block = Block(position=self.position + mouse.normal, texture=dirt_texture)
-                    if block_pick == 5: block = Block(position=self.position + mouse.normal, texture=wood_texture)
+                    if block_pick == 1: Block(position=self.position + mouse.normal, texture=grass_texture)
+                    if block_pick == 2: Block(position=self.position + mouse.normal, texture=stone_texture)
+                    if block_pick == 3: Block(position=self.position + mouse.normal, texture=brick_texture)
+                    if block_pick == 4: Block(position=self.position + mouse.normal, texture=dirt_texture)
+                    if block_pick == 5: Block(position=self.position + mouse.normal, texture=wood_texture)
 
             if key == 'left mouse down':
-                if math.dist(self.position, player.position) < 5:
+                if math.dist(self.position, player.position) < reach_distance:
                     punch_sound.play()
                     destroy(self)
 
