@@ -1,4 +1,4 @@
-from ursina.prefabs.first_person_controller import FirstPersonController
+from first_person_controller import FirstPersonController
 from ursina import *
 import math
 
@@ -9,7 +9,9 @@ original_world = []
 world_size = 25 # x and y
 world_depth = 5 # z
 
-reach_distance = 1005
+reach_distance = 5
+
+player_starting_position = (12, 4, 12)
 
 x_m = 20
 z_m = 15
@@ -50,7 +52,7 @@ def reset_game():
     for x, y, z, texture in original_world:
         block = Block(position=(x, y, z), texture=texture)  # Recreate blocks
 
-    player.position = (12, 4, 12)  # Reset player's position
+    player.position = player_starting_position  # Reset player's position
     invoke(hide_popup, delay=4)  # Hide popup after 3 seconds
 
 def toggle_player_visibility():
@@ -222,8 +224,8 @@ for z in range(world_size):
             h = (math.cos(dist_m * math.pi / r_m) + 1)*h_m/2
         else:
             h = 0
-        for y in range(world_depth + int(h)):
-            if y == world_depth + int(h) - 1:
+        for y in range(world_depth + round(h)):
+            if y == world_depth + round(h) - 1:
                 block = Block(position=(x, y, z), texture=grass_texture)
                 original_world.append((x, y, z, grass_texture))
             elif y == 0:
@@ -232,7 +234,7 @@ for z in range(world_size):
             else:
                 block = Block(position=(x, y, z), texture=dirt_texture)
                 original_world.append((x, y, z, dirt_texture))
-player = FirstPersonController(position=(12,25,12))
+player = FirstPersonController(position=player_starting_position)
 table = TableUI()
 sky = Sky()
 hand = Hand()
