@@ -24,6 +24,7 @@ stone_texture = load_texture('assets/stone_block2.png')
 wood_texture = load_texture('assets/wood_block.png')
 brick_texture = load_texture('assets/brick_block.png')
 dirt_texture = load_texture('assets/dirt_block.png')
+log_texture = load_texture('assets/log texture.png')
 sky_texture = load_texture('assets/skybox.png')
 arm_texture = load_texture('assets/arm_texture2.png')
 punch_sound = Audio('assets/punch_sound', loop=False, autoplay=False)
@@ -102,6 +103,10 @@ def update():
         block_pick = 5
         hand.texture = wood_texture
         hand.model='assets/block'
+    if held_keys['6']: 
+        block_pick = 6
+        hand.texture = log_texture
+        hand.model='assets/block'
 
 
 
@@ -142,6 +147,7 @@ class Block(Button):
                     if block_pick == 3: Block(position=self.position + mouse.normal, texture=brick_texture)
                     if block_pick == 4: Block(position=self.position + mouse.normal, texture=dirt_texture)
                     if block_pick == 5: Block(position=self.position + mouse.normal, texture=wood_texture)
+                    if block_pick == 6: Block(position=self.position + mouse.normal, texture=log_texture)
 
             if key == 'left mouse down':
                 if math.dist(self.position, player.position) < reach_distance:
@@ -165,12 +171,12 @@ class TableUI(Entity):
         self.cells = []
         for i in range(9):
 
-            if i <= 4:   
+            if i <= 5:   
                 cell = NonInteractiveButton(               
                 parent=self,
                 model='quad',
                 color=color.rgba(1, 1, 1, 0.9),
-                texture=["assets/grass3d.png","assets/Stone3d.png","assets/Brick3d.png","assets/Dirt3d.png","assets/plank3d.png"][i],
+                texture=["assets/grass3d.png","assets/Stone3d.png","assets/Brick3d.png","assets/Dirt3d.png","assets/plank3d.png","assets/log3d.png"][i],
                 border=0.02,
                 scale=(cell_size, cell_size),  # Cells are square now
                 origin=(-0.5, 0),
