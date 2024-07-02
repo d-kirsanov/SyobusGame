@@ -7,6 +7,7 @@ class FirstPersonController(Entity):
         super().__init__()
         self.speed = 4.317
         self.sprint_speed = 5.612
+        self.sneak_speed = 1.295
         self.height = 2
         self.camera_pivot = Entity(parent=self, y=self.height)
 
@@ -59,6 +60,12 @@ class FirstPersonController(Entity):
             else:  
                 move_amount = self.direction * time.dt * self.speed
 
+            if (held_keys['left shift'] or held_keys['right shift']) and not(held_keys ['spacebar']):
+                move_amount = self.direction * time.dt * self.sneak_speed
+
+            if  (held_keys['left control'] or held_keys['right control']) and held_keys['shift']:
+                move_amount = self.direction * time.dt * self.sneak_speed
+
             if raycast(self.position+Vec3(-.0,1,0), Vec3(1,0,0), distance=.5, traverse_target=self.traverse_target, ignore=self.ignore_list).hit:
                 move_amount[0] = min(move_amount[0], 0)
             if raycast(self.position+Vec3(-.0,1,0), Vec3(-1,0,0), distance=.5, traverse_target=self.traverse_target, ignore=self.ignore_list).hit:
@@ -88,7 +95,6 @@ class FirstPersonController(Entity):
                     move_percentage = move_percentage + direction * move_step * 2
 
                 move_percentage = max(move_percentage - 0.03, 0)
-                print(move_percentage)
                 move_amount = move_amount * move_percentage
 
             self.position += move_amount
