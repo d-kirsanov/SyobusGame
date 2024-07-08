@@ -25,6 +25,7 @@ wood_texture = load_texture('assets/wood_block.png')
 brick_texture = load_texture('assets/brick_block.png')
 dirt_texture = load_texture('assets/dirt_block.png')
 log_texture = load_texture('assets/log texture.png')
+teleporter_texture = load_texture('assets/teleporter texture.png')
 sky_texture = load_texture('assets/skybox.png')
 arm_texture = load_texture('assets/arm_texture2.png')
 punch_sound = Audio('assets/punch_sound', loop=False, autoplay=False)
@@ -61,6 +62,16 @@ def toggle_player_visibility():
     player_enabled = not player_enabled
     player.enabled = player_enabled
 
+
+def hand_update(pick, texture, model='assets/block', position=Vec2(0.4, -0.6), rotation=Vec3(150, -10, 0)):
+    global block_pick
+    block_pick = pick
+    hand.texture = texture
+    hand.model=model
+    hand.position = position
+    hand.rotation = rotation
+
+
 def update():
     global block_pick
     global p_key_held
@@ -84,38 +95,27 @@ def update():
         hand.passive()
 
     if held_keys['1']: 
-        block_pick = 1
-        hand.texture = grass_texture
-        hand.model='assets/block'
+        hand_update(1, grass_texture)
     if held_keys['2']: 
-        block_pick = 2
-        hand.texture = stone_texture
-        hand.model='assets/block'
+        hand_update(2,stone_texture)
     if held_keys['3']: 
-        block_pick = 3
-        hand.texture = brick_texture
-        hand.model='assets/block'
+        hand_update(3, brick_texture)
     if held_keys['4']: 
-        block_pick = 4
-        hand.texture = dirt_texture
-        hand.model='assets/block'
+        hand_update(4, dirt_texture)
     if held_keys['5']: 
-        block_pick = 5
-        hand.texture = wood_texture
-        hand.model='assets/block'
+        hand_update(5, wood_texture)
     if held_keys['6']: 
-        block_pick = 6
-        hand.texture = log_texture
-        hand.model='assets/block'
-
-
+        hand_update(6, log_texture)
+    if held_keys['7']:
+        hand_update(7, teleporter_texture, model='assets/teleporter', position=Vec2(0.4, -0.3), rotation=Vec3(290, -10, 0))
 
 class Block(Button):
-    def __init__(self, position=(0, 0, 0), texture=grass_texture):
+    def __init__(self, position=(0, 0, 0), texture=grass_texture, model='assets/block'):
         super().__init__(
             parent=scene,
             position=position,
-            model='assets/block',
+            model=model,
+            double_sided=True,
             origin_y=0.5,
             texture=texture,
             color=color.color(0, 0, 1),
@@ -148,7 +148,9 @@ class Block(Button):
                     if block_pick == 4: Block(position=self.position + mouse.normal, texture=dirt_texture)
                     if block_pick == 5: Block(position=self.position + mouse.normal, texture=wood_texture)
                     if block_pick == 6: Block(position=self.position + mouse.normal, texture=log_texture)
-
+                    # we add a little y shift so that teleporter renders correctly on top of another block
+                    if block_pick == 7: Block(position=self.position + mouse.normal + Vec3(0, 0.001, 0), texture=teleporter_texture, model="assets/teleporter")
+                    
             if key == 'left mouse down':
                 if math.dist(self.position, player.position) < reach_distance:
                     punch_sound.play()
@@ -171,12 +173,12 @@ class TableUI(Entity):
         self.cells = []
         for i in range(9):
 
-            if i <= 5:   
+            if i <= 6:   
                 cell = NonInteractiveButton(               
                 parent=self,
                 model='quad',
                 color=color.rgba(1, 1, 1, 0.9),
-                texture=["assets/grass3d.png","assets/Stone3d.png","assets/Brick3d.png","assets/Dirt3d.png","assets/plank3d.png","assets/log3d.png"][i],
+                texture=["assets/grass3d.png","assets/Stone3d.png","assets/Brick3d.png","assets/Dirt3d.png","assets/plank3d.png","assets/log3d.png","assets/teleporter3D.png"][i],
                 border=0.02,
                 scale=(cell_size, cell_size),  # Cells are square now
                 origin=(-0.5, 0),
@@ -212,6 +214,7 @@ class Hand(Entity):
             parent=camera.ui,
             model='assets/arm',
             texture=arm_texture,
+            double_sided=True,
             scale=0.2,
             rotation=Vec3(150, -10, 0),
             position=Vec2(0.4, -0.6)
