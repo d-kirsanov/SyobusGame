@@ -117,7 +117,7 @@ class World:
 
 
     def update(self):
-        if self.player.y < -10:  # Check if player fell off the edgehufyrvguyrfgveewwwwwwryewuwgvuuuuuuuueyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy
+        if self.player.y < -10:  # Check if player fell off the edge
             self.player.position=self.player_starting_position
 
         if held_keys['p'] and not self.p_key_held:
